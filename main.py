@@ -35,21 +35,30 @@ resources = {
 Profit = 0
 
 # report off, and it must pop up whenever the machine gets a coffee
-def check_resources(coffee_type, water, milk, coffee):
-    req_water = MENU[coffee_type]["ingredients"]["water"]
-    req_milk = MENU[coffee_type]["ingredients"]["milk"]
-    req_coffee = MENU[coffee_type]["ingredients"]["coffee"]
+# def check_resources(coffee_type, water, milk, coffee):
+#     # req_water = MENU[coffee_type]["ingredients"]["water"]
+#     # req_milk = MENU[coffee_type]["ingredients"]["milk"]
+#     # req_coffee = MENU[coffee_type]["ingredients"]["coffee"]
+#
+#     # if water < req_water:
+#     #
+#     #     return False,req_water, req_milk, req_coffee
+#     # elif milk < req_milk:
+#     #     return False,req_water, req_milk, req_coffee
+#     # elif coffee < req_coffee:
+#     #     return False,req_water, req_milk, req_coffee
+#     # else:
+#     #     return True, req_water, req_milk, req_coffee
 
+def check_resource(coffee_type):
+    ordered_item = MENU[coffee_type]["ingredients"]
     # checking
-    if water < req_water:
 
-        return False,req_water, req_milk, req_coffee
-    elif milk < req_milk:
-        return False,req_water, req_milk, req_coffee
-    elif coffee < req_coffee:
-        return False,req_water, req_milk, req_coffee
-    else:
-        return True, req_water, req_milk, req_coffee
+    for item in ordered_item:
+        if ordered_item[item] > resources[item]:
+            return False
+        return True
+
 
 
 def coffee_machine(resources, MENU):
@@ -77,15 +86,20 @@ def coffee_machine(resources, MENU):
         coffee_type = str(input("What would you like? (espresso/latte/cappuccino):\n"))
 
         # here checking if we have the required resources left
-        flag, req_water, req_milk, req_coffee = check_resources(coffee_type, water, milk, coffee)
+        # flag = check_resources(coffee_type, water, milk, coffee)
+        flag = check_resource(coffee_type)
         cost = MENU[coffee_type]["cost"]
+
 
         if flag == True:
             # deducting the resources
-            water -= req_water
-            milk -= req_milk
-            coffee -= req_coffee
 
+            # water -= req_water
+            # milk -= req_milk
+            # coffee -= req_coffee
+
+            for item in MENU[coffee_type]["ingredients"]:
+                resources[item] -= MENU[coffee_type]["ingredients"][item]
             # if this is true then we will process the money
             print("Insert the money so we can make the drink")
 
@@ -105,7 +119,8 @@ def coffee_machine(resources, MENU):
             else:
                 Profit += cost
 
-            print(f"the current resources is after purchasing coffee\nWater: {water} \nMilk: {milk} \nCoffee: {coffee} \nMoney: ${Profit}")
+            # print(f"the current resources is after purchasing coffee\nWater: {water} \nMilk: {milk} \nCoffee: {coffee} \nMoney: ${Profit}")
+            print(f"the current resources is after purchasing coffee\nWater: {resources["water"]} \nMilk: {resources["milk"]}\nCoffee: {resources["coffee"]} \nMoney: ${Profit}")
             print(f"Here is your {coffee_type}\n\n")
 
         else:
